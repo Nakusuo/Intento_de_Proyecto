@@ -1,11 +1,11 @@
-import psycopg2
-from config.config import Config
+class Config:
+    """Configuración general de la aplicación."""
+    APP_NAME = "Sistema Mesa de Partes"
+    VERSION = "1.0"
+    DEBUG = True
 
-class DatabaseConfig:
-    """Clase para manejar la conexión a la base de datos."""
-
-    @staticmethod
-    def get_connection():
-        """Devuelve una conexión a la base de datos usando la configuración."""
-        conn = psycopg2.connect(Config.get_db_connection())
-        return conn
+    # Parámetros de conexión a la base de datos
+    DB_HOST = 'localhost'  # Dirección del servidor SQL Server
+    DB_NAME = 'NakusuDB'   # Nombre de la base de datos
+    DB_USER = 'sa'         # Usuario de la base de datos
+    DB_PASSWORD = 'TuContraseñaSegura'  # Contraseña del usuario

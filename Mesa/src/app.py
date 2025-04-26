@@ -1,20 +1,18 @@
-# src/app.py
-
 from src.database import DatabaseConfig
 
 def main():
-    # Prueba de conexión a la base de datos
+    # Obtener la conexión a la base de datos
     conn = DatabaseConfig.get_connection()
+    
     if conn:
-        print("Conexión exitosa a SQL Server.")
-        # Puedes probar con una consulta
+        # Puedes realizar consultas con conn aquí, por ejemplo:
         cursor = conn.cursor()
-        cursor.execute("SELECT @@VERSION;")  # Consulta para verificar la versión de SQL Server
-        sql_version = cursor.fetchone()
-        print("Versión de SQL Server:", sql_version)
-        conn.close()
-    else:
-        print("No se pudo conectar a SQL Server.")
+        cursor.execute("SELECT * FROM tu_tabla")
+        rows = cursor.fetchall()
+        for row in rows:
+            print(row)
+        cursor.close()
+        conn.close()  # No olvides cerrar la conexión después de usarla
 
 if __name__ == "__main__":
     main()
