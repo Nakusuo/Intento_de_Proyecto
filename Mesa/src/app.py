@@ -1,18 +1,15 @@
-from src.database import DatabaseConfig
+import tkinter as tk
+from view import documento_view
+from view import usuario_view
 
-def main():
-    # Obtener la conexión a la base de datos
-    conn = DatabaseConfig.get_connection()
-    
-    if conn:
-        # Puedes realizar consultas con conn aquí, por ejemplo:
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM tu_tabla")
-        rows = cursor.fetchall()
-        for row in rows:
-            print(row)
-        cursor.close()
-        conn.close()  # No olvides cerrar la conexión después de usarla
+class App:
+    def __init__(self):
+        self.root = tk.Tk()
+        self.root.title("Sistema de Mesa de Partes")
+        
+        # Inicializar vistas
+        self.view = documento_view(self.root)
+        self.view = usuario_view(self.root)
 
-if __name__ == "__main__":
-    main()
+    def run(self):
+        self.root.mainloop()

@@ -1,5 +1,5 @@
 from src.models.documento import Documento
-from src.database import Database  # supondremos que tienes una clase Database en database.py
+from src.database import Database
 
 class DocumentoController:
     def __init__(self, db: Database):
@@ -13,7 +13,6 @@ class DocumentoController:
             fecha_recepcion=fecha_recepcion,
             estado=estado
         )
-        # Lógica para guardar en la base de datos
         query = """
         INSERT INTO documentos (tipo_documento, contenido, fecha_recepcion, estado)
         VALUES (%s, %s, %s, %s)
@@ -27,7 +26,7 @@ class DocumentoController:
     def obtener_documento_por_id(self, id_documento):
         query = "SELECT * FROM documentos WHERE id_documento = %s"
         result = self.db.fetch_one(query, (id_documento,))
-        if result:
+        if result is not None:
             return Documento(*result)
         return None
 
