@@ -1,5 +1,4 @@
-from src.app import App  # Importa la clase principal 'App' desde el archivo app.py
-
+from src.app import App
 def iniciar_aplicacion():
     try:
         # Si tu aplicación tiene alguna lógica inicial (conexión a base de datos, configuración, etc.), la llamas aquí.

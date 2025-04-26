@@ -15,30 +15,46 @@ class DocumentoController:
         )
         query = """
         INSERT INTO documentos (tipo_documento, contenido, fecha_recepcion, estado)
-        VALUES (%s, %s, %s, %s)
-        RETURNING id_documento
+        OUTPUT INSERTED.id_documento  -- Obtiene el ID del nuevo documento insertado
+        VALUES (?, ?, ?, ?)
         """
         params = (tipo_documento, contenido, fecha_recepcion, estado)
-        nuevo_id = self.db.execute_query_returning_id(query, params)
-        nuevo_documento.id_documento = nuevo_id
+        try:
+            nuevo_id = self.db.execute_query_returning_id(query, params)
+            nuevo_documento.id_documento = nuevo_id
+        except Exception as e:
+            print(f"Error al crear documento: {e}")
         return nuevo_documento
 
     def obtener_documento_por_id(self, id_documento):
-        query = "SELECT * FROM documentos WHERE id_documento = %s"
-        result = self.db.fetch_one(query, (id_documento,))
-        if result is not None:
-            return Documento(*result)
+        query = "SELECT * FROM documentos WHERE id_documento = ?"
+        try:
+            result = self.db.fetch_one(query, (id_documento,))
+            if result is not None:
+                return Documento(*result)
+        except Exception as e:
+            print(f"Error al obtener documento: {e}")
         return None
 
     def listar_documentos(self):
         query = "SELECT * FROM documentos"
-        results = self.db.fetch_all(query)
-        return [Documento(*row) for row in results]
+        try:
+            results = self.db.fetch_all(query)
+            return [Documento(*row) for row in results]
+        except Exception as e:
+            print(f"Error al listar documentos: {e}")
+        return []
 
     def actualizar_estado_documento(self, id_documento, nuevo_estado):
-        query = "UPDATE documentos SET estado = %s WHERE id_documento = %s"
-        self.db.execute_query(query, (nuevo_estado, id_documento))
+        query = "UPDATE documentos SET estado = ? WHERE id_documento = ?"
+        try:
+            self.db.execute_query(query, (nuevo_estado, id_documento))
+        except Exception as e:
+            print(f"Error al actualizar estado del documento: {e}")
 
     def eliminar_documento(self, id_documento):
-        query = "DELETE FROM documentos WHERE id_documento = %s"
-        self.db.execute_query(query, (id_documento,))
+        query = "DELETE FROM documentos WHERE id_documento = ?"
+        try:
+            self.db.execute_query(query, (id_documento,))
+        except Exception as e:
+            print(f"Error al eliminar documento: {e}")
