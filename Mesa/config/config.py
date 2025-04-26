@@ -21,4 +21,4 @@ class DatabaseConfig:
         except Exception as e:
             print(f"Error al conectar a la base de datos: {e}")
             return None
-ASSWORD = 'TuContraseñaSegura'  # Contraseña de la base de datos
+PASSWORD = 'TuContraseñaSegura'  # Contraseña de la base de datos
