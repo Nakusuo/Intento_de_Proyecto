@@ -1,19 +1,14 @@
 import pyodbc
-from config.db_config import DB_HOST, DB_NAME, DB_USER, DB_PASSWORD
+from config.db_config import DB_SERVER, DB_DATABASE, DB_USER, DB_PASSWORD
 
-# Función para establecer la conexión
 def get_connection():
     try:
-        # Construcción de la cadena de conexión
-        conexion = pyodbc.connect(
-            f'DRIVER={{ODBC Driver 17 for SQL Server}};'  # Usa el driver adecuado para tu versión
-            f'SERVER={DB_HOST};'
-            f'DATABASE={DB_NAME};'
-            f'UID={DB_USER};'
-            f'PWD={DB_PASSWORD}'
-        )
-        print("Conexión exitosa")
+        # Cadena de conexión a SQL Server
+        connection_string = f'DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={DB_SERVER};DATABASE={DB_DATABASE};UID={DB_USER};PWD={DB_PASSWORD}'
+        
+        # Establecer la conexión
+        conexion = pyodbc.connect(connection_string)
         return conexion
     except Exception as e:
-        print(f"Error al conectar a la base de datos: {e}")
+        print(f"Error de conexión: {e}")
         return None
