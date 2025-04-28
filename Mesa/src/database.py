@@ -1,9 +1,6 @@
 import pyodbc
 from config.db_config import Config
 
-
-
-
 class Database:
     @staticmethod
     def get_connection():

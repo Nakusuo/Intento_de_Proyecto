@@ -3,10 +3,9 @@ from tkinter import messagebox
 from src.controllers.documento_controller import DocumentoController
 
 class DocumentoView:
-    def __init__(self, controller: DocumentoController):
+    def __init__(self, parent, controller: DocumentoController):
         self.controller = controller
-        self.window = tk.Tk()
-        self.window.title("Gestión de Documentos")
+        self.window = parent
 
     def menu_documentos(self):
         # Limpia la ventana y muestra las opciones de menú

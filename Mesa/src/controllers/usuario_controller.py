@@ -1,25 +1,18 @@
-from src.models.usuario import Usuario
 from src.database import Database
+from src.models.usuario import Usuario
 
 class UsuarioController:
     def __init__(self, db: Database):
         self.db = db
 
     def crear_usuario(self, nombre_usuario, rol):
-        nuevo_usuario = Usuario(
-            id_usuario=None,
-            nombre_usuario=nombre_usuario,
-            rol=rol
-        )
-        query = """
-        INSERT INTO usuarios (nombre_usuario, rol)
-        OUTPUT INSERTED.id_usuario
-        VALUES (?, ?)
-        """
-        params = (nombre_usuario, rol)
-        nuevo_id = self.db.execute_query_returning_id(query, params)
-        nuevo_usuario.id_usuario = nuevo_id
-        return nuevo_usuario
+        conn = self.db.get_connection()
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO Usuarios (nombre_usuario, rol) VALUES (?, ?)", (nombre_usuario, rol))
+        conn.commit()
+        nuevo_id = cursor.execute("SELECT @@IDENTITY").fetchone()[0]
+        conn.close()
+        return Usuario(id_usuario=nuevo_id, nombre_usuario=nombre_usuario, rol=rol)
 
     def obtener_usuario_por_id(self, id_usuario):
         query = "SELECT * FROM usuarios WHERE id_usuario = ?"
