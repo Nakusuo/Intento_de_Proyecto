@@ -1,14 +1,13 @@
 import tkinter as tk
 from tkinter import messagebox
-from src.controllers.documento_controller import DocumentoController
 
 class DocumentoView:
-    def __init__(self, parent, controller: DocumentoController):
+    def __init__(self, controller):
         self.controller = controller
-        self.window = parent
+        self.window = tk.Tk()
+        self.window.title("Gestión de Documentos")
 
     def menu_documentos(self):
-        # Limpia la ventana y muestra las opciones de menú
         for widget in self.window.winfo_children():
             widget.destroy()
 
@@ -29,9 +28,7 @@ class DocumentoView:
             button.pack(pady=5)
 
     def crear_documento(self):
-        # Ventana para crear documento
         self._limpiar_ventana()
-
         tk.Label(self.window, text="Tipo de documento:").pack(pady=5)
         tipo = tk.Entry(self.window)
         tipo.pack(pady=5)
@@ -57,7 +54,6 @@ class DocumentoView:
         button.pack(pady=20)
 
     def listar_documentos(self):
-        # Ventana para listar documentos
         self._limpiar_ventana()
         documentos = self.controller.listar_documentos()
 
@@ -68,9 +64,7 @@ class DocumentoView:
         button.pack(pady=10)
 
     def buscar_documento(self):
-        # Ventana para buscar documento por ID
         self._limpiar_ventana()
-
         tk.Label(self.window, text="Ingrese ID del documento:").pack(pady=5)
         id_doc = tk.Entry(self.window)
         id_doc.pack(pady=5)
@@ -87,9 +81,7 @@ class DocumentoView:
         button.pack(pady=20)
 
     def actualizar_estado(self):
-        # Ventana para actualizar el estado de un documento
         self._limpiar_ventana()
-
         tk.Label(self.window, text="ID del documento:").pack(pady=5)
         id_doc = tk.Entry(self.window)
         id_doc.pack(pady=5)
@@ -107,9 +99,7 @@ class DocumentoView:
         button.pack(pady=20)
 
     def eliminar_documento(self):
-        # Ventana para eliminar documento
         self._limpiar_ventana()
-
         tk.Label(self.window, text="ID del documento a eliminar:").pack(pady=5)
         id_doc = tk.Entry(self.window)
         id_doc.pack(pady=5)
@@ -123,17 +113,9 @@ class DocumentoView:
         button.pack(pady=20)
 
     def _limpiar_ventana(self):
-        # Limpiar la ventana antes de mostrar una nueva pantalla
         for widget in self.window.winfo_children():
             widget.destroy()
 
     def iniciar(self):
-        self.menu_documentos()  # Llama al menú principal al iniciar
+        self.menu_documentos()
         self.window.mainloop()
-
-# Uso
-if __name__ == "__main__":
-    # Crear el controlador (se debe ajustar a cómo está definido en tu código)
-    controller = DocumentoController()
-    app = DocumentoView(controller)
-    app.iniciar()

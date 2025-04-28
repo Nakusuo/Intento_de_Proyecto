@@ -16,3 +16,39 @@ class Database:
             return conn
         except pyodbc.Error as e:
             raise Exception(f"Error al conectar a la base de datos: {e}")
+
+    def execute_query(self, query, params=()):
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        cursor.execute(query, params)
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    def fetch_one(self, query, params=()):
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        cursor.execute(query, params)
+        result = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        return result
+
+    def fetch_all(self, query):
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        cursor.execute(query)
+        results = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return results
+
+    def execute_query_returning_id(self, query, params=()):
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        cursor.execute(query, params)
+        inserted_id = cursor.fetchone()[0]
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return inserted_id

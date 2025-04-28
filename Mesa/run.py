@@ -1,22 +1,16 @@
-import sys
-import os
+from src.database import Database
+from src.controllers.documento_controller import DocumentoController
+from src.view.documento_view import DocumentoView
 
-# Añadir el directorio raíz al sys.path para que Python encuentre 'config' y 'src'
-sys.path.append(os.path.abspath(os.path.dirname(__file__)))
-
-from src.app import App # Ahora debería funcionar
-
-def iniciar_aplicacion():
+def main():
+    print("Iniciando la aplicación...")
     try:
-        # Si tu aplicación tiene alguna lógica inicial (conexión a base de datos, configuración, etc.), la llamas aquí.
-        print("Iniciando la aplicación...")
-
-        # Crea una instancia de la aplicación y ejecuta el método run()
-        app = App()  # Crea la instancia de la aplicación
-        app.run()    # Ejecuta la aplicación
-
+        db = Database()  # Crear la conexión a la base de datos
+        doc_controller = DocumentoController(db)  # Pasar la conexión al DocumentoController
+        app = DocumentoView(doc_controller)  # Pasar el controller a la vista
+        app.iniciar()
     except Exception as e:
         print(f"Ocurrió un error al iniciar la aplicación: {e}")
 
 if __name__ == "__main__":
-    iniciar_aplicacion()  # Llama a la función para iniciar la aplicación
+    main()
