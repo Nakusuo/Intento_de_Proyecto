@@ -1,61 +1,52 @@
-from src.controllers.usuario_controller import UsuarioController
+import tkinter as tk
+from tkinter import messagebox
 
 class UsuarioView:
-    def __init__(self, controller: UsuarioController):
-        self.controller = controller
+    def __init__(self, parent):
+        self.parent = parent
+        self.parent.title("Gestión de Usuarios")
 
-    def menu_usuarios(self):
-        while True:
-            print("\n--- Gestión de Usuarios ---")
-            print("1. Crear Usuario")
-            print("2. Listar Usuarios")
-            print("3. Buscar Usuario por ID")
-            print("4. Actualizar Rol de Usuario")
-            print("5. Eliminar Usuario")
-            print("6. Volver al Menú Principal")
-            opcion = input("Seleccione una opción: ")
+        # Título principal
+        self.label = tk.Label(parent, text="Gestión de Usuarios", font=("Arial", 16))
+        self.label.pack(pady=10)
 
-            if opcion == "1":
-                self.crear_usuario()
-            elif opcion == "2":
-                self.listar_usuarios()
-            elif opcion == "3":
-                self.buscar_usuario()
-            elif opcion == "4":
-                self.actualizar_rol()
-            elif opcion == "5":
-                self.eliminar_usuario()
-            elif opcion == "6":
-                break
-            else:
-                print("Opción inválida.")
+        # Nombre de Usuario
+        self.nombre_label = tk.Label(parent, text="Nombre de Usuario:")
+        self.nombre_label.pack(pady=5)
+        self.nombre_entry = tk.Entry(parent)
+        self.nombre_entry.pack(pady=5)
+
+        # Rol del Usuario
+        self.rol_label = tk.Label(parent, text="Rol del Usuario:")
+        self.rol_label.pack(pady=5)
+        self.rol_entry = tk.Entry(parent)
+        self.rol_entry.pack(pady=5)
+
+        # Botón para crear usuario
+        self.crear_button = tk.Button(parent, text="Crear Usuario", command=self.crear_usuario)
+        self.crear_button.pack(pady=10)
 
     def crear_usuario(self):
-        nombre = input("Nombre de usuario: ")
-        rol = input("Rol del usuario: ")
-        usuario = self.controller.crear_usuario(nombre, rol)
-        print(f"Usuario creado con ID: {usuario.id_usuario}")
+        nombre = self.nombre_entry.get()
+        rol = self.rol_entry.get()
 
-    def listar_usuarios(self):
-        usuarios = self.controller.listar_usuarios()
-        for user in usuarios:
-            print(f"{user.id_usuario} - {user.nombre_usuario} - {user.rol}")
+        if not nombre or not rol:
+            messagebox.showerror("Error", "Por favor, ingrese todos los campos.")
+            return
 
-    def buscar_usuario(self):
-        id_user = int(input("Ingrese ID del usuario: "))
-        user = self.controller.obtener_usuario_por_id(id_user)
-        if user:
-            print(f"Usuario: {user.nombre_usuario} - Rol: {user.rol}")
-        else:
-            print("Usuario no encontrado.")
+        # Aquí iría la lógica de crear el usuario, por ejemplo, guardarlo en una base de datos
+        # En este caso, simplemente imprimimos los datos para ver que funciona
+        print(f"Crear usuario: {nombre}, rol: {rol}")
 
-    def actualizar_rol(self):
-        id_user = int(input("ID del usuario: "))
-        nuevo_rol = input("Nuevo rol: ")
-        self.controller.actualizar_rol_usuario(id_user, nuevo_rol)
-        print("Rol actualizado.")
+        # Mostrar mensaje de confirmación
+        messagebox.showinfo("Usuario Creado", f"Usuario '{nombre}' con rol '{rol}' creado correctamente.")
+        
+        # Limpiar los campos de entrada
+        self.nombre_entry.delete(0, tk.END)
+        self.rol_entry.delete(0, tk.END)
 
-    def eliminar_usuario(self):
-        id_user = int(input("ID del usuario a eliminar: "))
-        self.controller.eliminar_usuario(id_user)
-        print("Usuario eliminado.")
+# Configuración de la ventana principal
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = UsuarioView(root)
+    root.mainloop()

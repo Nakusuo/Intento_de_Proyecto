@@ -4,7 +4,7 @@ import os
 # Añadir el directorio raíz al sys.path para que Python encuentre 'config' y 'src'
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 
-from src.app import App  # Ahora debería funcionar
+from src.app import App # Ahora debería funcionar
 
 def iniciar_aplicacion():
     try:

@@ -4,7 +4,7 @@ class Config:
     DB_HOST = 'localhost'  # Dirección del servidor SQL
     DB_NAME = 'NakusuBD'  # Nombre de la base de datos
     DB_USER = 'sa'        # Usuario de conexión
-    DB_PASSWORD = 'TuContraseñaSegura'  # Contraseña del usuario
+    DB_PASSWORD = 'admin123'  # Contraseña del usuario
 
 # Función para probar la conexión
 def test_connection():
