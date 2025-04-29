@@ -1,17 +1,14 @@
 import pyodbc
-from config.db_config import Config
+from config.db_config import Config  # Suponiendo que la configuración de tu base de datos esté en este archivo
 
 class Database:
     @staticmethod
     def get_connection():
         try:
-            conn = pyodbc.connect(
-                f'DRIVER={{ODBC Driver 17 for SQL Server}};'
-                f'SERVER={Config.DB_HOST};'
-                f'DATABASE={Config.DB_NAME};'
-                f'UID={Config.DB_USER};'
-                f'PWD={Config.DB_PASSWORD};'
-            )
+            # Asegúrate de usar los valores correctos para tu servidor, base de datos, usuario y contraseña
+            conn_str = "Driver={ODBC Driver 17 for SQL Server};Server=your_server_name;Database=your_database_name;UID=your_user;PWD=your_password"
+
+            conn = pyodbc.connect(conn_str)
             print("Conexión exitosa a la base de datos")
             return conn
         except pyodbc.Error as e:

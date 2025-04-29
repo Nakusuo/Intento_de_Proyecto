@@ -5,56 +5,84 @@ class DocumentoController:
     def __init__(self, db: Database):
         self.db = db
 
-    def crear_documento(self, tipo_documento, contenido, fecha_recepcion, estado):
-        nuevo_documento = Documento(
-            id_documento=None,  # Al crear es None, la base de datos lo asignará
-            tipo_documento=tipo_documento,
-            contenido=contenido,
-            fecha_recepcion=fecha_recepcion,
-            estado=estado
-        )
+    def obtener_tipos_documento(self):
+        query = "SELECT id_tipo, nombre FROM TipoDocumento"
+        try:
+            resultados = self.db.fetch_all(query)
+            return {nombre: id_tipo for id_tipo, nombre in resultados}
+        except Exception as e:
+            print(f"Error al obtener tipos de documento: {e}")
+            return {}
+
+    def obtener_lista_personal(self):
+        query = "SELECT id_personal, nombre FROM Personal"
+        try:
+            resultados = self.db.fetch_all(query)
+            return {nombre: id_personal for id_personal, nombre in resultados}
+        except Exception as e:
+            print(f"Error al obtener personal: {e}")
+            return {}
+
+    def obtener_documentos(self):
         query = """
-        INSERT INTO documentos (tipo_documento, contenido, fecha_recepcion, estado)
-        OUTPUT INSERTED.id_documento  -- Obtiene el ID del nuevo documento insertado
-        VALUES (?, ?, ?, ?)
+            SELECT d.id_documento, td.nombre AS tipo_documento, d.contenido, d.fecha_recepcion, d.estado, p.nombre AS personal
+            FROM documentos d
+            JOIN TipoDocumento td ON d.tipo_documento_id = td.id_tipo
+            LEFT JOIN Personal p ON d.personal_id = p.id_personal
         """
-        params = (tipo_documento, contenido, fecha_recepcion, estado)
         try:
-            nuevo_id = self.db.execute_query_returning_id(query, params)
-            nuevo_documento.id_documento = nuevo_id
+            resultados = self.db.fetch_all(query)
+            documentos = []
+            for row in resultados:
+                documentos.append({
+                    "id_documento": row[0],
+                    "tipo_documento": row[1],
+                    "contenido": row[2],
+                    "fecha_recepcion": row[3],
+                    "estado": row[4],
+                    "personal": row[5] or "Sin asignar",
+                })
+            return documentos
         except Exception as e:
-            print(f"Error al crear documento: {e}")
-        return nuevo_documento
+            print(f"Error al obtener documentos: {e}")
+            return []
 
-    def obtener_documento_por_id(self, id_documento):
-        query = "SELECT * FROM documentos WHERE id_documento = ?"
+    def obtener_personal_con_tareas(self):
+        query = """
+            SELECT 
+                p.nombre, 
+                p.area, 
+                COUNT(CASE WHEN d.estado = 'Pendiente' THEN 1 END) AS documentos_pendientes,
+                COUNT(CASE WHEN d.estado = 'Realizado' THEN 1 END) AS documentos_realizados
+            FROM Personal p
+            LEFT JOIN documentos d ON p.id_personal = d.personal_id
+            GROUP BY p.nombre, p.area
+        """
         try:
-            result = self.db.fetch_one(query, (id_documento,))
-            if result is not None:
-                return Documento(*result)
+            resultados = self.db.fetch_all(query)
+            personal = []
+            for row in resultados:
+                personal.append({
+                    "nombre": row[0],
+                    "area": row[1],
+                    "pendientes": row[2],
+                    "realizados": row[3]
+                })
+            return personal
         except Exception as e:
-            print(f"Error al obtener documento: {e}")
-        return None
+            print(f"Error al obtener tareas del personal: {e}")
+            return []
 
-    def listar_documentos(self):
-        query = "SELECT * FROM documentos"
+    def obtener_pendientes_por_personal(self, nombre_personal):
+        query = """
+            SELECT d.id_documento, td.nombre AS tipo_documento, d.contenido, d.fecha_recepcion
+            FROM documentos d
+            JOIN TipoDocumento td ON d.tipo_documento_id = td.id_tipo
+            JOIN Personal p ON d.personal_id = p.id_personal
+            WHERE p.nombre = ? AND d.estado = 'Pendiente'
+        """
         try:
-            results = self.db.fetch_all(query)
-            return [Documento(*row) for row in results]
+            return self.db.fetch_all(query, (nombre_personal,))
         except Exception as e:
-            print(f"Error al listar documentos: {e}")
-        return []
-
-    def actualizar_estado_documento(self, id_documento, nuevo_estado):
-        query = "UPDATE documentos SET estado = ? WHERE id_documento = ?"
-        try:
-            self.db.execute_query(query, (nuevo_estado, id_documento))
-        except Exception as e:
-            print(f"Error al actualizar estado del documento: {e}")
-
-    def eliminar_documento(self, id_documento):
-        query = "DELETE FROM documentos WHERE id_documento = ?"
-        try:
-            self.db.execute_query(query, (id_documento,))
-        except Exception as e:
-            print(f"Error al eliminar documento: {e}")
+            print(f"Error al obtener pendientes de {nombre_personal}: {e}")
+            return []
